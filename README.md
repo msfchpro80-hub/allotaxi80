@@ -1,0 +1,961 @@
+[allo_taxi80_v2.html](https://github.com/user-attachments/files/28657720/allo_taxi80_v2.html)
+# allotaxi80<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALLO TAXI 80 — Dispatch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root{
+  --ink:#0D0D0F;
+  --ink2:#3A3A42;
+  --ink3:#7A7A85;
+  --amber:#E8B84B;
+  --bg:#F7F6F2;
+  --card:#FFFFFF;
+  --border:#E4E3DC;
+  --border2:#CCCBC2;
+  --success:#1A6B43;
+  --success-bg:#D6F0E3;
+  --danger:#9B2020;
+  --danger-bg:#FCE8E8;
+  --warn:#7A5C00;
+  --warn-bg:#FFF3CD;
+  --info:#1A4A8A;
+  --info-bg:#DDE9FA;
+  --radius:12px;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.05);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;}
+
+.topbar{
+  background:var(--ink);color:#fff;
+  display:flex;align-items:center;gap:16px;
+  padding:0 24px;height:60px;
+  position:sticky;top:0;z-index:200;
+}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;letter-spacing:-.3px;display:flex;align-items:center;gap:10px;}
+.logo-badge{background:var(--amber);color:var(--ink);padding:2px 8px;border-radius:6px;font-size:13px;font-weight:700;}
+.topbar-right{margin-left:auto;display:flex;gap:8px;align-items:center;}
+.btn-topbar{
+  display:flex;align-items:center;gap:6px;padding:7px 16px;
+  border-radius:8px;border:1.5px solid rgba(255,255,255,.15);
+  background:rgba(255,255,255,.08);color:#fff;font-size:13px;
+  cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s;
+}
+.btn-topbar:hover{background:rgba(255,255,255,.16);}
+.btn-topbar.primary{background:var(--amber);color:var(--ink);border-color:var(--amber);}
+.btn-topbar.primary:hover{background:#d4a73e;}
+
+.nav{background:var(--card);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;scrollbar-width:none;padding:0 12px;}
+.nav::-webkit-scrollbar{display:none;}
+.nav-btn{
+  display:flex;align-items:center;gap:7px;padding:14px 16px;
+  border:none;background:none;cursor:pointer;white-space:nowrap;
+  color:var(--ink3);font-size:13.5px;font-family:'DM Sans',sans-serif;
+  border-bottom:2.5px solid transparent;transition:color .15s;
+}
+.nav-btn.active{color:var(--ink);border-bottom-color:var(--amber);font-weight:500;}
+.nav-btn i{font-size:17px;}
+
+.page{max-width:1100px;margin:0 auto;padding:28px 20px;}
+.section{display:none;}
+.section.active{display:block;}
+
+.table-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
+.table-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);}
+.table-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:600;}
+.tbl{width:100%;border-collapse:collapse;font-size:13px;}
+.tbl th{padding:10px 14px;text-align:left;font-size:10.5px;font-weight:500;color:var(--ink3);text-transform:uppercase;letter-spacing:.5px;background:#FAFAF8;border-bottom:1px solid var(--border);}
+.tbl td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--ink);vertical-align:middle;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:#FAFAF8;}
+
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:500;white-space:nowrap;}
+.badge-pending{background:var(--warn-bg);color:var(--warn);}
+.badge-assigned{background:var(--info-bg);color:var(--info);}
+.badge-inprogress{background:#E3F0F5;color:#0A5470;}
+.badge-done{background:var(--success-bg);color:var(--success);}
+.badge-cancelled{background:var(--danger-bg);color:var(--danger);}
+
+.btn{
+  display:inline-flex;align-items:center;gap:6px;padding:8px 16px;
+  border-radius:8px;border:1px solid var(--border2);background:var(--card);
+  color:var(--ink);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;
+  transition:background .1s;
+}
+.btn:hover{background:var(--bg);}
+.btn.primary{background:var(--ink);color:#fff;border-color:var(--ink);}
+.btn.primary:hover{background:#1a1a22;}
+.btn.amber{background:var(--amber);color:var(--ink);border-color:var(--amber);}
+.btn.amber:hover{background:#d4a73e;}
+.btn.danger{background:var(--danger-bg);color:var(--danger);border-color:var(--danger);}
+.btn.green{background:#25D366;color:#fff;border-color:#25D366;}
+.btn.blue{background:#4A90D9;color:#fff;border-color:#4A90D9;}
+.btn.sm{padding:5px 11px;font-size:12px;}
+.btn.icon{padding:6px 8px;}
+
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;align-items:flex-start;justify-content:center;padding:50px 16px 20px;overflow-y:auto;}
+.overlay.open{display:flex;}
+.modal{background:var(--card);border-radius:16px;width:100%;max-width:540px;box-shadow:0 20px 60px rgba(0,0,0,.25);}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border);}
+.modal-head h3{font-family:'Syne',sans-serif;font-size:16px;font-weight:600;}
+.modal-body{padding:24px;display:grid;gap:16px;}
+.modal-foot{padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;}
+
+.field{display:flex;flex-direction:column;gap:6px;}
+.field label{font-size:12px;font-weight:500;color:var(--ink2);}
+.field input,.field select,.field textarea{
+  padding:9px 12px;border:1px solid var(--border2);border-radius:8px;
+  background:var(--bg);color:var(--ink);font-size:13.5px;font-family:'DM Sans',sans-serif;
+  transition:border-color .15s;
+}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--amber);background:#fff;}
+.field textarea{resize:vertical;min-height:70px;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+
+.filter-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;align-items:center;}
+.filter-row select,.filter-row input{
+  padding:7px 11px;border-radius:8px;border:1px solid var(--border2);
+  background:var(--card);color:var(--ink);font-size:13px;font-family:'DM Sans',sans-serif;
+}
+
+.driver-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-bottom:24px;}
+.driver-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);}
+.driver-avatar{width:48px;height:48px;border-radius:50%;background:var(--ink);color:var(--amber);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:12px;}
+.driver-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:600;margin-bottom:6px;}
+.driver-info{font-size:12px;color:var(--ink3);display:flex;flex-direction:column;gap:5px;margin-bottom:12px;}
+.driver-stat{display:flex;justify-content:space-between;padding:5px 0;border-top:1px solid var(--border);font-size:12px;}
+.driver-stat span:last-child{font-weight:500;color:var(--ink);}
+.driver-actions{display:flex;gap:6px;margin-top:12px;}
+
+.config-box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:20px;box-shadow:var(--shadow);}
+.config-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.info-box{background:var(--info-bg);border:1px solid #B8D0F0;border-radius:8px;padding:14px 16px;font-size:13px;color:var(--info);line-height:1.6;margin-bottom:16px;}
+.warn-box{background:var(--warn-bg);border:1px solid #D4B800;border-radius:8px;padding:14px 16px;font-size:13px;color:var(--warn);line-height:1.6;margin-bottom:16px;}
+.step-list{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
+.step-list li{display:flex;gap:10px;font-size:13px;align-items:flex-start;}
+.step-num{background:var(--ink);color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px;}
+code{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:1px 5px;font-size:12px;color:var(--ink);}
+a.link{color:var(--info);text-decoration:underline;}
+.email-preview{background:#F5F4EF;border:1px solid var(--border);border-radius:10px;padding:16px;font-size:12.5px;line-height:1.7;color:var(--ink2);}
+.email-preview strong{color:var(--ink);}
+
+.toast{
+  position:fixed;bottom:24px;right:24px;z-index:999;
+  background:var(--ink);color:#fff;padding:13px 20px;border-radius:10px;
+  font-size:13.5px;box-shadow:0 4px 20px rgba(0,0,0,.25);
+  transform:translateY(20px);opacity:0;transition:all .3s;
+  display:flex;align-items:center;gap:10px;pointer-events:none;
+}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.warn{background:#7A5C00;}
+.toast.danger{background:var(--danger);}
+
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.section-header h2{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;}
+
+@media(max-width:600px){
+  .topbar{padding:0 14px;}
+  .page{padding:16px 12px;}
+  .field-row{grid-template-columns:1fr;}
+  .tbl th:nth-child(n+5),.tbl td:nth-child(n+5){display:none;}
+  .modal-foot{flex-direction:column;}
+  .modal-foot .btn{justify-content:center;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="logo">
+    <i class="ti ti-car" style="font-size:22px;color:var(--amber)"></i>
+    ALLO <span class="logo-badge">TAXI 80</span>
+  </div>
+  <div class="topbar-right">
+    <button class="btn-topbar primary" onclick="openAddCourse()">
+      <i class="ti ti-plus"></i> Nouvelle course
+    </button>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <button class="nav-btn active" id="tab-courses" onclick="showTab('courses')"><i class="ti ti-route"></i>Courses</button>
+  <button class="nav-btn" id="tab-chauffeurs" onclick="showTab('chauffeurs')"><i class="ti ti-steering-wheel"></i>Chauffeurs</button>
+  <button class="nav-btn" id="tab-email" onclick="showTab('email')"><i class="ti ti-mail-bolt"></i>Envoi auto</button>
+</nav>
+
+<div class="page">
+
+<!-- ═══ COURSES ═══ -->
+<div class="section active" id="section-courses">
+  <div class="filter-row">
+    <button class="btn primary" onclick="openAddCourse()"><i class="ti ti-plus"></i>Nouvelle course</button>
+    <select id="f-statut" onchange="renderCourses()">
+      <option value="">Tous les statuts</option>
+      <option>À confirmer</option><option>Assignée</option>
+      <option>En cours</option><option>Terminée</option><option>Annulée</option>
+    </select>
+    <select id="f-chauf" onchange="renderCourses()"><option value="">Tous les chauffeurs</option></select>
+    <input type="date" id="f-date-filter" onchange="renderCourses()">
+    <button class="btn sm" onclick="document.getElementById('f-date-filter').value='';document.getElementById('f-statut').value='';document.getElementById('f-chauf').value='';renderCourses()">
+      <i class="ti ti-x"></i> Réinitialiser
+    </button>
+    <span id="courses-count" style="font-size:12px;color:var(--ink3);margin-left:auto;"></span>
+  </div>
+  <div class="table-card">
+    <table class="tbl"><thead><tr>
+      <th>Date</th><th>Client / Tél</th><th>Départ → Destination</th>
+      <th>Chauffeur</th><th>Heure</th><th>Prix</th><th>Statut</th><th></th>
+    </tr></thead>
+    <tbody id="courses-body"></tbody></table>
+  </div>
+</div>
+
+<!-- ═══ CHAUFFEURS ═══ -->
+<div class="section" id="section-chauffeurs">
+  <div class="section-header">
+    <h2>Équipe chauffeurs</h2>
+    <button class="btn primary" onclick="openAddDriver()"><i class="ti ti-user-plus"></i>Ajouter un chauffeur</button>
+  </div>
+  <div class="driver-grid" id="driver-grid"></div>
+
+  <!-- Planning par chauffeur -->
+  <div class="table-card">
+    <div class="table-head">
+      <span class="table-title">Planning du chauffeur</span>
+      <select id="plan-chauf" onchange="renderPlanning()" style="font-size:13px;padding:6px 10px;border:1px solid var(--border2);border-radius:8px;background:var(--bg);"></select>
+    </div>
+    <table class="tbl"><thead><tr>
+      <th>Date</th><th>Heure</th><th>Client</th><th>Trajet</th><th>Prix</th><th>Statut</th>
+    </tr></thead>
+    <tbody id="planning-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ ENVOI AUTO ═══ -->
+<div class="section" id="section-email">
+  <div style="max-width:680px;">
+
+    <!-- EmailJS -->
+    <div class="config-box">
+      <div class="config-title"><i class="ti ti-mail-bolt" style="font-size:20px;color:var(--amber)"></i>Email automatique via EmailJS</div>
+      <div class="info-box">
+        <strong>Gratuit — 200 emails/mois</strong><br>
+        Envoyez une demande de disponibilité au chauffeur en 1 clic depuis la fiche course. S'il répond OUI, il reçoit automatiquement tous les détails.
+      </div>
+      <ul class="step-list">
+        <li><span class="step-num">1</span><span>Créez un compte sur <a class="link" href="https://www.emailjs.com" target="_blank">emailjs.com</a> (gratuit)</span></li>
+        <li><span class="step-num">2</span><span>Ajoutez un service Gmail/Outlook → notez le <strong>Service ID</strong></span></li>
+        <li><span class="step-num">3</span><span>Créez 2 templates avec les variables indiquées ci-dessous → notez les <strong>Template IDs</strong></span></li>
+        <li><span class="step-num">4</span><span>Dans Account → notez votre <strong>Public Key</strong></span></li>
+      </ul>
+      <div style="display:grid;gap:12px;margin-bottom:16px;">
+        <div class="field"><label>Public Key EmailJS</label><input id="ejs-pubkey" placeholder="user_xxxxxxxxxxxxxxxxx"></div>
+        <div class="field-row">
+          <div class="field"><label>Service ID</label><input id="ejs-service" placeholder="service_xxxxxxx"></div>
+          <div class="field"><label>Template ID — Disponibilité</label><input id="ejs-tpl-dispo" placeholder="template_xxxxxxx"></div>
+        </div>
+        <div class="field"><label>Template ID — Détails course</label><input id="ejs-tpl-details" placeholder="template_xxxxxxx"></div>
+        <div class="field"><label>URL de cette page (pour les liens OUI/NON dans l'email)</label><input id="ejs-url" placeholder="https://monsite.com/allotaxi80.html"></div>
+      </div>
+      <button class="btn amber" onclick="saveEmailConfig()"><i class="ti ti-device-floppy"></i>Sauvegarder</button>
+    </div>
+
+    <!-- Templates -->
+    <div class="config-box">
+      <div class="config-title"><i class="ti ti-template" style="font-size:20px;color:var(--ink3)"></i>Variables à utiliser dans vos templates EmailJS</div>
+      <p style="font-size:13px;color:var(--ink2);margin-bottom:10px;"><strong>Template 1 — Disponibilité</strong> (sujet : <code>Course disponible — ALLO TAXI 80</code>)</p>
+      <div class="email-preview" style="margin-bottom:14px;">
+        Bonjour <strong>{{to_name}}</strong>,<br><br>
+        Course le <strong>{{date}}</strong> à <strong>{{heure}}</strong> — <strong>{{depart}}</strong> → <strong>{{destination}}</strong><br>
+        Client : <strong>{{client}}</strong> | Prix : <strong>{{prix}} €</strong><br><br>
+        <a href="{{lien_oui}}">✅ OUI, disponible</a> &nbsp; <a href="{{lien_non}}">❌ NON</a><br><br>— ALLO TAXI 80
+      </div>
+      <p style="font-size:13px;color:var(--ink2);margin-bottom:10px;"><strong>Template 2 — Confirmation détails</strong></p>
+      <div class="email-preview">
+        Bonjour <strong>{{to_name}}</strong>, votre course est confirmée.<br><br>
+        📅 <strong>{{date}}</strong> à <strong>{{heure}}</strong><br>
+        👤 <strong>{{client}}</strong> — <strong>{{telephone}}</strong><br>
+        📍 <strong>{{depart}}</strong> → <strong>{{destination}}</strong><br>
+        💶 <strong>{{prix}} €</strong> | Note : <strong>{{note}}</strong><br><br>— ALLO TAXI 80
+      </div>
+    </div>
+
+    <!-- WhatsApp CallMeBot -->
+    <div class="config-box">
+      <div class="config-title"><i class="ti ti-brand-whatsapp" style="font-size:20px;color:#25D366"></i>WhatsApp gratuit via CallMeBot</div>
+      <div class="info-box">
+        <strong>Alternative à l'email — 100% gratuit, aucun serveur.</strong><br>
+        Chaque chauffeur s'inscrit en 2 min. Vous envoyez ensuite les courses directement sur son WhatsApp.
+      </div>
+      <ul class="step-list">
+        <li><span class="step-num">1</span><span>Le chauffeur envoie <code>I allow callmebot to send me messages</code> au <strong>+34 644 52 74 17</strong> sur WhatsApp</span></li>
+        <li><span class="step-num">2</span><span>Il reçoit sa clé API (ex: <code>123456</code>) par WhatsApp</span></li>
+        <li><span class="step-num">3</span><span>Renseignez son N° WhatsApp et sa clé dans sa fiche chauffeur</span></li>
+        <li><span class="step-num">4</span><span>Le bouton 💬 WhatsApp apparaît dans chaque course assignée à ce chauffeur</span></li>
+      </ul>
+      <div class="warn-box">Le numéro doit être au format international sans + ni espaces. Ex : <code>33612345678</code> pour le 06 12 34 56 78</div>
+    </div>
+
+    <!-- Test -->
+    <div class="config-box">
+      <div class="config-title"><i class="ti ti-test-pipe" style="font-size:20px;color:var(--ink3)"></i>Test rapide</div>
+      <div class="field-row" style="margin-bottom:12px;">
+        <div class="field"><label>Email de test</label><input id="test-email" type="email" placeholder="votre@email.com"></div>
+        <div class="field" style="justify-content:flex-end;">
+          <button class="btn primary" onclick="sendTestEmail()" style="margin-top:auto;"><i class="ti ti-send"></i>Tester email</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</div><!-- /page -->
+
+<!-- ═══ MODAL COURSE ═══ -->
+<div class="overlay" id="modal-course">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modal-course-title">Nouvelle course</h3>
+      <button class="btn icon" onclick="closeModal('modal-course')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="field-row">
+        <div class="field"><label>Nom du client *</label><input id="f-client" placeholder="Jean Dupont"></div>
+        <div class="field"><label>Téléphone client</label><input id="f-tel" placeholder="06 12 34 56 78"></div>
+      </div>
+      <div class="field"><label>Adresse de départ *</label><input id="f-depart" placeholder="Gare d'Amiens, Place Alphonse Fiquet"></div>
+      <div class="field"><label>Destination *</label><input id="f-dest" placeholder="Aéroport CDG, Terminal 2"></div>
+      <div class="field-row">
+        <div class="field"><label>Date *</label><input id="f-date" type="date"></div>
+        <div class="field"><label>Heure de prise en charge *</label><input id="f-heure" type="time"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Chauffeur</label>
+          <select id="f-chauf-modal" onchange="updateSendButtons()">
+            <option value="">— Choisir —</option>
+          </select>
+        </div>
+        <div class="field"><label>Prix (€)</label><input id="f-prix" type="number" min="0" step="0.5" placeholder="35.00"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Statut</label>
+          <select id="f-statut-modal">
+            <option>À confirmer</option><option>Assignée</option>
+            <option>En cours</option><option>Terminée</option><option>Annulée</option>
+          </select>
+        </div>
+        <div class="field"><label>Mode de paiement</label>
+          <select id="f-paiement">
+            <option value="">—</option>
+            <option>Espèces</option><option>CB</option><option>Virement</option><option>Chèque</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>Note / informations</label>
+        <textarea id="f-note" placeholder="Bagages, besoins spécifiques..."></textarea>
+      </div>
+      <input type="hidden" id="f-id">
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeModal('modal-course')">Annuler</button>
+      <button class="btn primary" id="btn-email-dispo" onclick="sendDispoEmail()" style="display:none"><i class="ti ti-mail-bolt"></i>Email dispo</button>
+      <button class="btn green" id="btn-wa-dispo" onclick="sendWhatsAppDispo()" style="display:none"><i class="ti ti-brand-whatsapp"></i>WhatsApp</button>
+      <button class="btn blue" id="btn-sms-dispo" onclick="sendSMSDispo()" style="display:none"><i class="ti ti-device-mobile-message"></i>SMS</button>
+      <button class="btn amber" onclick="saveCourse()"><i class="ti ti-check"></i>Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL CHAUFFEUR ═══ -->
+<div class="overlay" id="modal-driver">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modal-driver-title">Nouveau chauffeur</h3>
+      <button class="btn icon" onclick="closeModal('modal-driver')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="field-row">
+        <div class="field"><label>Prénom *</label><input id="d-prenom" placeholder="Jean"></div>
+        <div class="field"><label>Nom *</label><input id="d-nom" placeholder="Martin"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Téléphone</label><input id="d-tel" placeholder="06 00 00 00 00"></div>
+        <div class="field"><label>Email</label><input id="d-email" type="email" placeholder="jean@email.com"></div>
+      </div>
+      <div class="field"><label>Immatriculation</label><input id="d-immat" placeholder="AB-123-CD"></div>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px;">
+        <div style="font-size:12px;font-weight:600;color:var(--ink2);margin-bottom:10px;">📱 WhatsApp (CallMeBot) — optionnel</div>
+        <div class="field-row">
+          <div class="field"><label>N° WhatsApp (intl, sans +)</label><input id="d-wanum" placeholder="33612345678"></div>
+          <div class="field"><label>API Key CallMeBot</label><input id="d-wakey" placeholder="123456"></div>
+        </div>
+      </div>
+      <input type="hidden" id="d-id">
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeModal('modal-driver')">Annuler</button>
+      <button class="btn amber" onclick="saveDriver()"><i class="ti ti-check"></i>Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span id="toast-msg"></span></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  DONNÉES
+// ═══════════════════════════════════════════════════════════════
+var courses = [];
+var drivers = [];
+var emailCfg = {};
+
+try { courses = JSON.parse(localStorage.getItem('at80_courses') || '[]'); } catch(e){ courses = []; }
+try { drivers = JSON.parse(localStorage.getItem('at80_drivers') || '[]'); } catch(e){ drivers = []; }
+try { emailCfg = JSON.parse(localStorage.getItem('at80_email') || '{}'); } catch(e){ emailCfg = {}; }
+
+function saveCourses(){ try{ localStorage.setItem('at80_courses', JSON.stringify(courses)); }catch(e){} }
+function saveDrivers(){ try{ localStorage.setItem('at80_drivers', JSON.stringify(drivers)); }catch(e){} }
+function saveEmailCfg(){ try{ localStorage.setItem('at80_email', JSON.stringify(emailCfg)); }catch(e){} }
+
+// Données de démo au premier chargement
+if(!drivers.length){
+  drivers = [
+    {id:'d1',prenom:'Marc',nom:'Leblanc',tel:'06 11 22 33 44',email:'marc@allotaxi80.fr',immat:'AB-123-CD',wanum:'',wakey:''},
+    {id:'d2',prenom:'Sophie',nom:'Petit',tel:'06 55 66 77 88',email:'sophie@allotaxi80.fr',immat:'EF-456-GH',wanum:'',wakey:''},
+    {id:'d3',prenom:'Karim',nom:'Benzara',tel:'06 99 00 11 22',email:'karim@allotaxi80.fr',immat:'IJ-789-KL',wanum:'',wakey:''},
+  ];
+  saveDrivers();
+}
+if(!courses.length){
+  var t = new Date().toISOString().slice(0,10);
+  var y = new Date(Date.now()-864e5).toISOString().slice(0,10);
+  courses = [
+    {id:'c1',client:'Alice Morin',tel:'06 10 20 30 40',depart:"Gare d'Amiens",dest:'CHU Amiens',date:t,heure:'08:30',chauffeur:'d1',prix:18,statut:'Terminée',paiement:'CB',note:''},
+    {id:'c2',client:'Bernard Roux',tel:'06 50 60 70 80',depart:'5 av Faidherbe',dest:'Aéroport CDG',date:t,heure:'11:00',chauffeur:'d2',prix:85,statut:'Assignée',paiement:'',note:'2 valises'},
+    {id:'c3',client:'Céline Dupont',tel:'06 01 23 45 67',depart:'Clinique Ste-Élisabeth',dest:'Rue des Lilas',date:t,heure:'14:15',chauffeur:'d1',prix:22,statut:'En cours',paiement:'Espèces',note:''},
+    {id:'c4',client:'Didier Martin',tel:'06 77 88 99 00',depart:'Amiens Centre',dest:'Gare TGV Haute-Picardie',date:t,heure:'16:30',chauffeur:'d3',prix:35,statut:'À confirmer',paiement:'',note:''},
+  ];
+  saveCourses();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  UTILS
+// ═══════════════════════════════════════════════════════════════
+function getDriver(id){ return drivers.find(function(d){ return d.id === id; }); }
+function driverName(id){ var d = getDriver(id); return d ? d.prenom+' '+d.nom : '—'; }
+
+var badgeClass = {
+  'À confirmer':'badge-pending','Assignée':'badge-assigned',
+  'En cours':'badge-inprogress','Terminée':'badge-done','Annulée':'badge-cancelled'
+};
+function badge(s){ return '<span class="badge '+(badgeClass[s]||'')+'">'+s+'</span>'; }
+function today(){ return new Date().toISOString().slice(0,10); }
+
+function toast(msg, type){
+  var el = document.getElementById('toast');
+  var msgEl = document.getElementById('toast-msg');
+  el.className = 'toast' + (type ? ' '+type : '');
+  msgEl.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(el._timer);
+  el._timer = setTimeout(function(){ el.classList.remove('show'); }, 3200);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════════════════════
+function showTab(tab){
+  document.querySelectorAll('.section').forEach(function(s){ s.classList.remove('active'); });
+  document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById('section-'+tab).classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active');
+  if(tab === 'courses') renderCourses();
+  if(tab === 'chauffeurs') renderDrivers();
+  if(tab === 'email') loadEmailConfig();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  COURSES
+// ═══════════════════════════════════════════════════════════════
+function renderCourses(){
+  var sv = document.getElementById('f-statut').value;
+  var cv = document.getElementById('f-chauf').value;
+  var dv = document.getElementById('f-date-filter').value;
+
+  // Remplir le filtre chauffeurs
+  var fc = document.getElementById('f-chauf');
+  var prevVal = fc.value;
+  fc.innerHTML = '<option value="">Tous les chauffeurs</option>';
+  drivers.forEach(function(d){
+    var opt = document.createElement('option');
+    opt.value = d.id;
+    opt.textContent = d.prenom+' '+d.nom;
+    if(prevVal === d.id) opt.selected = true;
+    fc.appendChild(opt);
+  });
+
+  var list = courses.slice();
+  if(sv) list = list.filter(function(c){ return c.statut === sv; });
+  if(cv) list = list.filter(function(c){ return c.chauffeur === cv; });
+  if(dv) list = list.filter(function(c){ return c.date === dv; });
+  list.sort(function(a,b){ return (b.date+b.heure).localeCompare(a.date+a.heure); });
+
+  document.getElementById('courses-count').textContent = list.length + ' course(s)';
+  var body = document.getElementById('courses-body');
+
+  if(!list.length){
+    body.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--ink3);">Aucune course trouvée</td></tr>';
+    return;
+  }
+
+  body.innerHTML = list.map(function(c){
+    return '<tr>'+
+      '<td>'+c.date+'</td>'+
+      '<td><strong>'+c.client+'</strong><br><span style="font-size:11px;color:var(--ink3)">'+( c.tel||'')+'</span></td>'+
+      '<td><span style="font-size:12px">'+c.depart+' → '+c.dest+'</span></td>'+
+      '<td>'+driverName(c.chauffeur)+'</td>'+
+      '<td>'+c.heure+'</td>'+
+      '<td>'+(c.prix ? '<strong>'+c.prix+'€</strong>' : '—')+'</td>'+
+      '<td>'+badge(c.statut)+'</td>'+
+      '<td><div style="display:flex;gap:5px">'+
+        '<button class="btn sm icon" onclick="editCourse(\''+c.id+'\')"><i class="ti ti-edit"></i></button>'+
+        '<button class="btn sm icon" onclick="deleteCourse(\''+c.id+'\')" style="color:var(--danger)"><i class="ti ti-trash"></i></button>'+
+      '</div></td>'+
+    '</tr>';
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  CHAUFFEURS
+// ═══════════════════════════════════════════════════════════════
+function renderDrivers(){
+  var grid = document.getElementById('driver-grid');
+  if(!drivers.length){
+    grid.innerHTML = '<div style="color:var(--ink3);font-size:13px;">Aucun chauffeur. Ajoutez-en un !</div>';
+  } else {
+    grid.innerHTML = drivers.map(function(d){
+      var dc = courses.filter(function(c){ return c.chauffeur === d.id; });
+      var done = dc.filter(function(c){ return c.statut === 'Terminée'; });
+      var ca = done.reduce(function(s,c){ return s+(+c.prix||0); }, 0);
+      var waStatus = (d.wanum && d.wakey)
+        ? '<span style="color:#25D366;font-weight:500"><i class="ti ti-brand-whatsapp"></i> WhatsApp OK</span>'
+        : '<span style="color:var(--ink3)">WhatsApp non configuré</span>';
+      return '<div class="driver-card">'+
+        '<div class="driver-avatar">'+(d.prenom[0]+d.nom[0]).toUpperCase()+'</div>'+
+        '<div class="driver-name">'+d.prenom+' '+d.nom+'</div>'+
+        '<div class="driver-info">'+
+          '<span><i class="ti ti-phone" style="font-size:13px"></i> '+(d.tel||'—')+'</span>'+
+          '<span><i class="ti ti-mail" style="font-size:13px"></i> '+(d.email||'—')+'</span>'+
+          '<span><i class="ti ti-car" style="font-size:13px"></i> '+(d.immat||'—')+'</span>'+
+          '<span style="font-size:11px;">'+waStatus+'</span>'+
+        '</div>'+
+        '<div class="driver-stat"><span>Courses</span><span>'+dc.length+'</span></div>'+
+        '<div class="driver-stat"><span>Terminées</span><span>'+done.length+'</span></div>'+
+        '<div class="driver-stat"><span>CA total</span><span>'+ca.toFixed(0)+' €</span></div>'+
+        '<div class="driver-actions">'+
+          '<button class="btn sm amber" style="flex:1" onclick="editDriver(\''+d.id+'\')"><i class="ti ti-edit"></i> Modifier</button>'+
+          '<button class="btn sm danger" onclick="deleteDriver(\''+d.id+'\')"><i class="ti ti-trash"></i></button>'+
+        '</div>'+
+      '</div>';
+    }).join('');
+  }
+
+  // Planning select
+  var sel = document.getElementById('plan-chauf');
+  var prev = sel.value;
+  sel.innerHTML = drivers.map(function(d){
+    return '<option value="'+d.id+'"'+(prev===d.id?' selected':'')+'>'+d.prenom+' '+d.nom+'</option>';
+  }).join('');
+  if(!prev && drivers.length) sel.value = drivers[0].id;
+  renderPlanning();
+}
+
+function renderPlanning(){
+  var id = document.getElementById('plan-chauf').value;
+  var list = courses.filter(function(c){ return c.chauffeur === id; });
+  list.sort(function(a,b){ return (b.date+b.heure).localeCompare(a.date+a.heure); });
+  var body = document.getElementById('planning-body');
+  if(!list.length){
+    body.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--ink3);">Aucune course</td></tr>';
+    return;
+  }
+  body.innerHTML = list.map(function(c){
+    return '<tr>'+
+      '<td>'+c.date+'</td><td>'+c.heure+'</td>'+
+      '<td><strong>'+c.client+'</strong></td>'+
+      '<td><span style="font-size:12px">'+c.depart+' → '+c.dest+'</span></td>'+
+      '<td>'+(c.prix ? c.prix+'€' : '—')+'</td>'+
+      '<td>'+badge(c.statut)+'</td>'+
+    '</tr>';
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  MODAL COURSE
+// ═══════════════════════════════════════════════════════════════
+function openAddCourse(){
+  document.getElementById('modal-course-title').textContent = 'Nouvelle course';
+  ['f-client','f-tel','f-depart','f-dest','f-prix','f-note'].forEach(function(id){ document.getElementById(id).value = ''; });
+  document.getElementById('f-date').value = today();
+  document.getElementById('f-heure').value = new Date().toTimeString().slice(0,5);
+  document.getElementById('f-statut-modal').value = 'À confirmer';
+  document.getElementById('f-paiement').value = '';
+  document.getElementById('f-id').value = '';
+
+  var sel = document.getElementById('f-chauf-modal');
+  sel.innerHTML = '<option value="">— Choisir —</option>';
+  drivers.forEach(function(d){
+    var opt = document.createElement('option');
+    opt.value = d.id;
+    opt.textContent = d.prenom+' '+d.nom;
+    sel.appendChild(opt);
+  });
+  updateSendButtons();
+  document.getElementById('modal-course').classList.add('open');
+}
+
+function editCourse(id){
+  var c = courses.find(function(x){ return x.id === id; });
+  if(!c) return;
+  document.getElementById('modal-course-title').textContent = 'Modifier la course';
+  document.getElementById('f-client').value = c.client;
+  document.getElementById('f-tel').value = c.tel||'';
+  document.getElementById('f-depart').value = c.depart;
+  document.getElementById('f-dest').value = c.dest;
+  document.getElementById('f-date').value = c.date;
+  document.getElementById('f-heure').value = c.heure;
+  document.getElementById('f-prix').value = c.prix||'';
+  document.getElementById('f-statut-modal').value = c.statut;
+  document.getElementById('f-paiement').value = c.paiement||'';
+  document.getElementById('f-note').value = c.note||'';
+  document.getElementById('f-id').value = c.id;
+
+  var sel = document.getElementById('f-chauf-modal');
+  sel.innerHTML = '<option value="">— Choisir —</option>';
+  drivers.forEach(function(d){
+    var opt = document.createElement('option');
+    opt.value = d.id;
+    opt.textContent = d.prenom+' '+d.nom;
+    if(d.id === c.chauffeur) opt.selected = true;
+    sel.appendChild(opt);
+  });
+  updateSendButtons();
+  document.getElementById('modal-course').classList.add('open');
+}
+
+function saveCourse(){
+  var id = document.getElementById('f-id').value;
+  var client = document.getElementById('f-client').value.trim();
+  var depart = document.getElementById('f-depart').value.trim();
+  var dest = document.getElementById('f-dest').value.trim();
+  if(!client||!depart||!dest){ toast('Veuillez remplir client, départ et destination.','warn'); return; }
+
+  var obj = {
+    id: id || 'c'+Date.now(),
+    client: client,
+    tel: document.getElementById('f-tel').value.trim(),
+    depart: depart,
+    dest: dest,
+    date: document.getElementById('f-date').value,
+    heure: document.getElementById('f-heure').value,
+    chauffeur: document.getElementById('f-chauf-modal').value,
+    prix: parseFloat(document.getElementById('f-prix').value) || 0,
+    statut: document.getElementById('f-statut-modal').value,
+    paiement: document.getElementById('f-paiement').value,
+    note: document.getElementById('f-note').value.trim()
+  };
+
+  if(id){
+    var i = courses.findIndex(function(c){ return c.id === id; });
+    if(i >= 0) courses[i] = obj;
+  } else {
+    courses.unshift(obj);
+  }
+  saveCourses();
+  closeModal('modal-course');
+  toast('Course enregistrée ✓');
+  renderCourses();
+}
+
+function deleteCourse(id){
+  if(!confirm('Supprimer cette course ?')) return;
+  courses = courses.filter(function(c){ return c.id !== id; });
+  saveCourses();
+  renderCourses();
+  toast('Course supprimée');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  MODAL CHAUFFEUR
+// ═══════════════════════════════════════════════════════════════
+function openAddDriver(){
+  document.getElementById('modal-driver-title').textContent = 'Nouveau chauffeur';
+  ['d-prenom','d-nom','d-tel','d-email','d-immat','d-wanum','d-wakey','d-id'].forEach(function(id){ document.getElementById(id).value = ''; });
+  document.getElementById('modal-driver').classList.add('open');
+}
+
+function editDriver(id){
+  var d = getDriver(id);
+  if(!d) return;
+  document.getElementById('modal-driver-title').textContent = 'Modifier le chauffeur';
+  document.getElementById('d-prenom').value = d.prenom;
+  document.getElementById('d-nom').value = d.nom;
+  document.getElementById('d-tel').value = d.tel||'';
+  document.getElementById('d-email').value = d.email||'';
+  document.getElementById('d-immat').value = d.immat||'';
+  document.getElementById('d-wanum').value = d.wanum||'';
+  document.getElementById('d-wakey').value = d.wakey||'';
+  document.getElementById('d-id').value = d.id;
+  document.getElementById('modal-driver').classList.add('open');
+}
+
+function saveDriver(){
+  var prenom = document.getElementById('d-prenom').value.trim();
+  var nom = document.getElementById('d-nom').value.trim();
+  if(!prenom||!nom){ toast('Prénom et nom requis.','warn'); return; }
+  var existId = document.getElementById('d-id').value;
+  var obj = {
+    id: existId || 'd'+Date.now(),
+    prenom: prenom, nom: nom,
+    tel: document.getElementById('d-tel').value.trim(),
+    email: document.getElementById('d-email').value.trim(),
+    immat: document.getElementById('d-immat').value.trim(),
+    wanum: document.getElementById('d-wanum').value.trim(),
+    wakey: document.getElementById('d-wakey').value.trim()
+  };
+  if(existId){
+    var i = drivers.findIndex(function(d){ return d.id === existId; });
+    if(i >= 0) drivers[i] = obj;
+    toast('Chauffeur modifié ✓');
+  } else {
+    drivers.push(obj);
+    toast('Chauffeur ajouté ✓');
+  }
+  saveDrivers();
+  closeModal('modal-driver');
+  renderDrivers();
+}
+
+function deleteDriver(id){
+  if(!confirm('Supprimer ce chauffeur ?')) return;
+  drivers = drivers.filter(function(d){ return d.id !== id; });
+  saveDrivers();
+  renderDrivers();
+  toast('Chauffeur supprimé');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  BOUTONS D'ENVOI — affichage dynamique
+// ═══════════════════════════════════════════════════════════════
+function updateSendButtons(){
+  var chauffeurId = document.getElementById('f-chauf-modal').value;
+  var d = chauffeurId ? getDriver(chauffeurId) : null;
+  var hasEmail = d && d.email && emailCfg.pubKey && emailCfg.service && emailCfg.tplDispo;
+  var hasWA = d && d.wanum && d.wakey;
+  var hasTel = d && d.tel;
+  document.getElementById('btn-email-dispo').style.display = hasEmail ? 'inline-flex' : 'none';
+  document.getElementById('btn-wa-dispo').style.display = hasWA ? 'inline-flex' : 'none';
+  document.getElementById('btn-sms-dispo').style.display = hasTel ? 'inline-flex' : 'none';
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  MODALS
+// ═══════════════════════════════════════════════════════════════
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.overlay').forEach(function(m){
+  m.addEventListener('click', function(e){ if(e.target === m) m.classList.remove('open'); });
+});
+
+// ═══════════════════════════════════════════════════════════════
+//  EMAIL CONFIG
+// ═══════════════════════════════════════════════════════════════
+function loadEmailConfig(){
+  if(emailCfg.pubKey) document.getElementById('ejs-pubkey').value = emailCfg.pubKey;
+  if(emailCfg.service) document.getElementById('ejs-service').value = emailCfg.service;
+  if(emailCfg.tplDispo) document.getElementById('ejs-tpl-dispo').value = emailCfg.tplDispo;
+  if(emailCfg.tplDetails) document.getElementById('ejs-tpl-details').value = emailCfg.tplDetails;
+  if(emailCfg.siteUrl) document.getElementById('ejs-url').value = emailCfg.siteUrl;
+}
+
+function saveEmailConfig(){
+  emailCfg = {
+    pubKey: document.getElementById('ejs-pubkey').value.trim(),
+    service: document.getElementById('ejs-service').value.trim(),
+    tplDispo: document.getElementById('ejs-tpl-dispo').value.trim(),
+    tplDetails: document.getElementById('ejs-tpl-details').value.trim(),
+    siteUrl: document.getElementById('ejs-url').value.trim()
+  };
+  saveEmailCfg();
+  initEmailJS();
+  toast('Configuration sauvegardée ✓');
+}
+
+function initEmailJS(){
+  if(emailCfg.pubKey && typeof emailjs !== 'undefined'){
+    try { emailjs.init({publicKey: emailCfg.pubKey}); } catch(e){}
+  }
+}
+
+// Init au chargement si clé présente
+window.addEventListener('load', function(){ initEmailJS(); });
+
+// ═══════════════════════════════════════════════════════════════
+//  ENVOI EMAIL DISPONIBILITÉ
+// ═══════════════════════════════════════════════════════════════
+function sendDispoEmail(){
+  if(!emailCfg.pubKey||!emailCfg.service||!emailCfg.tplDispo){
+    toast('Configurez EmailJS dans l\'onglet "Envoi auto".','warn'); return;
+  }
+  if(typeof emailjs === 'undefined'){ toast('EmailJS non chargé. Vérifiez votre connexion.','warn'); return; }
+
+  var chauffeurId = document.getElementById('f-chauf-modal').value;
+  if(!chauffeurId){ toast('Sélectionnez un chauffeur.','warn'); return; }
+  var d = getDriver(chauffeurId);
+  if(!d||!d.email){ toast('Ce chauffeur n\'a pas d\'email.','warn'); return; }
+
+  var courseId = document.getElementById('f-id').value || 'c'+Date.now();
+  var baseUrl = emailCfg.siteUrl || window.location.href.split('?')[0];
+
+  initEmailJS();
+  emailjs.send(emailCfg.service, emailCfg.tplDispo, {
+    to_name: d.prenom+' '+d.nom,
+    to_email: d.email,
+    date: document.getElementById('f-date').value,
+    heure: document.getElementById('f-heure').value,
+    client: document.getElementById('f-client').value,
+    depart: document.getElementById('f-depart').value,
+    destination: document.getElementById('f-dest').value,
+    prix: document.getElementById('f-prix').value || 'À définir',
+    lien_oui: baseUrl+'?rep=oui&course='+courseId+'&chauf='+chauffeurId,
+    lien_non: baseUrl+'?rep=non&course='+courseId+'&chauf='+chauffeurId
+  }).then(function(){
+    toast('📧 Email envoyé à '+d.prenom+' '+d.nom+' ✓');
+    var cid = document.getElementById('f-id').value;
+    if(cid){
+      var idx = courses.findIndex(function(c){ return c.id === cid; });
+      if(idx >= 0){ courses[idx].statut = 'Assignée'; courses[idx].chauffeur = chauffeurId; saveCourses(); }
+    }
+  }).catch(function(e){
+    toast('Erreur envoi : '+(e.text||e.message||JSON.stringify(e)),'danger');
+    console.error(e);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  ENVOI EMAIL DÉTAILS (après acceptation)
+// ═══════════════════════════════════════════════════════════════
+function sendDetailsEmail(course, driver){
+  if(!emailCfg.pubKey||!emailCfg.service||!emailCfg.tplDetails) return;
+  if(typeof emailjs === 'undefined') return;
+  initEmailJS();
+  emailjs.send(emailCfg.service, emailCfg.tplDetails, {
+    to_name: driver.prenom+' '+driver.nom,
+    to_email: driver.email,
+    date: course.date, heure: course.heure,
+    client: course.client, telephone: course.tel||'—',
+    depart: course.depart, destination: course.dest,
+    prix: course.prix||'À définir', note: course.note||'Aucune'
+  }).then(function(){ toast('Détails envoyés à '+driver.prenom+' ✓'); })
+    .catch(function(e){ console.error(e); });
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  WHATSAPP (CallMeBot)
+// ═══════════════════════════════════════════════════════════════
+function sendWhatsAppDispo(){
+  var chauffeurId = document.getElementById('f-chauf-modal').value;
+  if(!chauffeurId){ toast('Sélectionnez un chauffeur.','warn'); return; }
+  var d = getDriver(chauffeurId);
+  if(!d||!d.wanum||!d.wakey){ toast('WhatsApp non configuré pour ce chauffeur.','warn'); return; }
+
+  var msg = '🚖 ALLO TAXI 80 — Nouvelle course\n'+
+    '📅 '+document.getElementById('f-date').value+' à '+document.getElementById('f-heure').value+'\n'+
+    '👤 Client : '+document.getElementById('f-client').value+'\n'+
+    '📍 '+document.getElementById('f-depart').value+' → '+document.getElementById('f-dest').value+'\n'+
+    '💶 '+( document.getElementById('f-prix').value||'?')+' €\n\nÊtes-vous disponible ? Répondez OUI ou NON.';
+
+  var url = 'https://api.callmebot.com/whatsapp.php?phone='+d.wanum+'&text='+encodeURIComponent(msg)+'&apikey='+d.wakey;
+  var win = window.open(url, '_blank');
+  setTimeout(function(){ if(win) win.close(); }, 3000);
+  toast('💬 WhatsApp envoyé à '+d.prenom+' ✓');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  SMS (lien direct)
+// ═══════════════════════════════════════════════════════════════
+function sendSMSDispo(){
+  var chauffeurId = document.getElementById('f-chauf-modal').value;
+  if(!chauffeurId){ toast('Sélectionnez un chauffeur.','warn'); return; }
+  var d = getDriver(chauffeurId);
+  if(!d||!d.tel){ toast('Pas de téléphone pour ce chauffeur.','warn'); return; }
+
+  var tel = d.tel.replace(/[\s\.\-]/g,'');
+  var msg = 'ALLO TAXI 80 - Course '+document.getElementById('f-date').value+' '+document.getElementById('f-heure').value+
+    ': '+document.getElementById('f-client').value+
+    ', '+document.getElementById('f-depart').value+' → '+document.getElementById('f-dest').value+
+    ', '+(document.getElementById('f-prix').value||'?')+'EUR. Dispo ? Rep OUI/NON';
+  window.location.href = 'sms:'+tel+'?body='+encodeURIComponent(msg);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  TEST EMAIL
+// ═══════════════════════════════════════════════════════════════
+function sendTestEmail(){
+  if(!emailCfg.pubKey||!emailCfg.service||!emailCfg.tplDispo){
+    toast('Configurez d\'abord EmailJS.','warn'); return;
+  }
+  var email = document.getElementById('test-email').value.trim();
+  if(!email){ toast('Entrez un email de test.','warn'); return; }
+  if(typeof emailjs === 'undefined'){ toast('EmailJS non chargé.','warn'); return; }
+  initEmailJS();
+  emailjs.send(emailCfg.service, emailCfg.tplDispo, {
+    to_name:'Chauffeur Test', to_email:email,
+    date:'12/06/2026', heure:'10:00',
+    client:'Client Test', depart:"Gare d'Amiens", destination:'CHU Amiens',
+    prix:'25', lien_oui:'#oui', lien_non:'#non'
+  }).then(function(){ toast('Email de test envoyé ✓'); })
+    .catch(function(e){ toast('Erreur : '+(e.text||e.message||e),'danger'); console.error(e); });
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  TRAITEMENT RÉPONSE CHAUFFEUR (lien dans l'email)
+// ═══════════════════════════════════════════════════════════════
+function handleUrlParams(){
+  var p = new URLSearchParams(window.location.search);
+  var rep = p.get('rep'), cid = p.get('course'), did = p.get('chauf');
+  if(!rep||!cid||!did) return;
+  window.history.replaceState({}, '', window.location.pathname);
+  var c = courses.find(function(x){ return x.id === cid; });
+  var d = getDriver(did);
+  if(!c||!d) return;
+  if(rep === 'oui'){
+    c.statut = 'Assignée'; c.chauffeur = did;
+    saveCourses();
+    toast(d.prenom+' '+d.nom+' a accepté la course ✓');
+    if(d.email && emailCfg.pubKey) sendDetailsEmail(c, d);
+  } else {
+    toast(d.prenom+' '+d.nom+' n\'est pas disponible','warn');
+  }
+  renderCourses();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════════
+handleUrlParams();
+renderCourses();
+</script>
+</body>
+</html>
